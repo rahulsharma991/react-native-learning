@@ -1,28 +1,41 @@
 import React, {useState} from 'react';
-import {SafeAreaView, StyleSheet, View, FlatList} from 'react-native';
+import {SafeAreaView, StyleSheet, View, FlatList, Button} from 'react-native';
 import GoalInput from './components/GoalInput';
 import GoalItems from './components/GoalItems';
 
 const App = () => {
   const [courseGoals, getCourseGoals] = useState([]);
+  const [modalVisible, setModalVisibility] = useState(false);
 
   function submitData(name) {
     getCourseGoals(currentCourseGoal => [
       ...currentCourseGoal,
       {text: name, id: Math.random().toString()},
     ]);
+    dismissModal();
   }
 
   function deleteData(id) {
     getCourseGoals(currentCourseGoal => {
       return currentCourseGoal.filter(goal => goal.id !== id);
     });
-    console.log('DELETE');
   }
+  function addNewGoals() {
+    setModalVisibility(true);
+  }
+  function dismissModal() {
+    setModalVisibility(false);
+  }
+
   return (
     <SafeAreaView>
       <View>
-        <GoalInput onAddGoal={submitData} />
+        <Button title="Add new goal" onPress={addNewGoals} />
+        <GoalInput
+          visible={modalVisible}
+          onAddGoal={submitData}
+          cancelModal={dismissModal}
+        />
         <View style={styles.goalContainer}>
           <FlatList
             data={courseGoals}
