@@ -1,10 +1,21 @@
 import {useState} from 'react';
-import {StyleSheet, TextInput, View, Alert} from 'react-native';
+import {
+  StyleSheet,
+  TextInput,
+  View,
+  Alert,
+  useWindowDimensions,
+  Dimensions,
+  KeyboardAvoidingView,
+  ScrollView,
+} from 'react-native';
 import PrimaryButton from '../components/PrimaryButton';
+import Title from '../components/Title';
 import Colors from '../utils/color';
 
 function StartGameScreen({onPickNumber}) {
   const [enteredNumber, setEnteredNumber] = useState('');
+  const {width, height} = useWindowDimensions();
 
   function numberInputhandler(getNumber) {
     setEnteredNumber(getNumber);
@@ -25,29 +36,36 @@ function StartGameScreen({onPickNumber}) {
     }
     onPickNumber(chosenNumber);
   }
-
+  const marginTopDistance = height < 380 ? 30 : 100;
   return (
-    <View style={styles.inputContainer}>
-      <TextInput
-        style={styles.numberInput}
-        maxLength={2}
-        keyboardType="number-pad"
-        autoCapitalize="none"
-        autoCorrect={false}
-        onChangeText={numberInputhandler}
-        value={enteredNumber}
-      />
-      <View style={styles.buttonsContainer}>
-        <View style={styles.buttonContainer}>
-          <PrimaryButton dynamicPress={resetInputHandler}>Reset</PrimaryButton>
+    <ScrollView>
+      <KeyboardAvoidingView behavior="position">
+        <View style={[styles.inputContainer, {marginTop: marginTopDistance}]}>
+          <Title>OPPONONET NUMBER</Title>
+          <TextInput
+            style={styles.numberInput}
+            maxLength={2}
+            keyboardType="number-pad"
+            autoCapitalize="none"
+            autoCorrect={false}
+            onChangeText={numberInputhandler}
+            value={enteredNumber}
+          />
+          <View style={styles.buttonsContainer}>
+            <View style={styles.buttonContainer}>
+              <PrimaryButton dynamicPress={resetInputHandler}>
+                Reset
+              </PrimaryButton>
+            </View>
+            <View style={styles.buttonContainer}>
+              <PrimaryButton dynamicPress={confirmInputHandler}>
+                Confirm
+              </PrimaryButton>
+            </View>
+          </View>
         </View>
-        <View style={styles.buttonContainer}>
-          <PrimaryButton dynamicPress={confirmInputHandler}>
-            Confirm
-          </PrimaryButton>
-        </View>
-      </View>
-    </View>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 
@@ -55,7 +73,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 100,
     marginHorizontal: 24,
     padding: 16,
     backgroundColor: Colors.primary600,
